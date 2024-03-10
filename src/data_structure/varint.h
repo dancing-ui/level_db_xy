@@ -1,14 +1,14 @@
-#ifndef _VAR_INT_H_
-#define _VAR_INT_H_
+#ifndef _LEVEL_DB_XY_VAR_INT_H_
+#define _LEVEL_DB_XY_VAR_INT_H_
 
-namespace data_structure {
-namespace varint {
+namespace ns_data_structure {
+namespace ns_varint {
 
 class VarInt {
 
 };
 
-} // varint
-} // data_structure
+} // ns_varint
+} // ns_data_structure
 
 #endif

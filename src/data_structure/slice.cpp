@@ -55,5 +55,5 @@ std::string Slice::ToStdString() {
     return ret;
 }
 
-}
-} // namespace ns_data_structure::ns_slice
+} // ns_slice
+} // ns_data_structure

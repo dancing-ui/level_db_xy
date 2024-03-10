@@ -9,6 +9,9 @@ set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -rdynamic -fPIC -ggdb -std=c++17 -Wall -Wno-
 
 set(SRC_DIR 
     data_structure
+    memory
+    log
+    algorithm
 )
 
 foreach(DIR ${SRC_DIR})
@@ -16,7 +19,7 @@ foreach(DIR ${SRC_DIR})
     aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/../src/${DIR} SOURCE_LIST)
 endforeach()
 
-add_executable(test_slice 
-    test_slice.cpp
+add_executable(test_skip_list 
+    test_skip_list.cpp
     ${SOURCE_LIST}
 )

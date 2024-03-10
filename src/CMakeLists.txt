@@ -8,6 +8,9 @@ set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -rdynamic -fPIC -ggdb -std=c++17 -Wall -Wno-
 
 set(SRC_DIR 
     data_structure
+    memory
+    log
+    algorithm
 )
 
 foreach(DIR ${SRC_DIR})

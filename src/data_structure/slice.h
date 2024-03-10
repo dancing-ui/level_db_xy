@@ -1,5 +1,5 @@
-#ifndef _SLICE_H_
-#define _SLICE_H_
+#ifndef _LEVEL_DB_XY_SLICE_H_
+#define _LEVEL_DB_XY_SLICE_H_
 
 #include <cstdint>
 #include <string>
@@ -18,8 +18,7 @@ public:
     Slice &operator=(Slice const &slice);
     Slice &operator=(Slice &&slice);
 
-    
-    int32_t GetLen() const;
+        int32_t GetLen() const;
     uint8_t const *GetData() const;
     void SetData(uint8_t const *data, int32_t len);
     void SetData(std::string const &data, int32_t len);
@@ -32,7 +31,7 @@ private:
     uint8_t const *data_{nullptr};
 };
 
-}
-} // namespace ns_data_structure::ns_slice
+} // ns_slice
+} // ns_data_structure
 
 #endif
