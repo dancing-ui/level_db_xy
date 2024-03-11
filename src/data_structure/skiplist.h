@@ -84,7 +84,7 @@ struct SkipList<Key, Comparator>::Node {
     }
 
 private:
-    std::atomic<Node *> next_[kMaxHeight];
+    std::atomic<Node *> next_[1]; // 为了可以使用下标访问，如 next_[i]
 };
 /**
  * SkipList Impl
@@ -132,7 +132,9 @@ int32_t SkipList<Key, Comparator>::GetMaxHeight() const {
 }
 template <typename Key, typename Comparator>
 typename SkipList<Key, Comparator>::Node *SkipList<Key, Comparator>::NewNode(Key const &key, int32_t height) {
+    // 总高度是height，需要height个Node指针，由于Node本身有一个Node* next_[0]， 所以需要height - 1个Node指针
     uint8_t *const node_memory = arena_->AllocateAligned(sizeof(Node) + sizeof(std::atomic<Node *>) * (height - 1));
+    // 将分配的内存node_memory直接作为new的内存，不需要new再分配，且node_memory经过内存对齐，效率更高
     return new (node_memory) Node(key);
 }
 template <typename Key, typename Comparator>
@@ -142,8 +144,7 @@ int32_t SkipList<Key, Comparator>::RandomHeight() {
     while (height < kMaxHeight && rnd_.OneIn(kBranching)) {
         height++;
     }
-    assert(height > 0);
-    assert(height <= kMaxHeight);
+    assert(height > 0 && height <= kMaxHeight);
     return height;
 }
 template <typename Key, typename Comparator>
@@ -160,11 +161,13 @@ typename SkipList<Key, Comparator>::Node *SkipList<Key, Comparator>::FindGreater
     int32_t level = GetMaxHeight() - 1;
     while (true) {
         Node *next = x->Next(level);
-        if (KeyIsAfterNode(key, next)) {
-            x = next;
+        if(next != nullptr && compare_(next->key, key) < 0) {
+          x = next;
         } else {
-            if (prev != nullptr) prev[level] = x;
-            if (level == 0) {
+            if(prev != nullptr) {
+                prev[level] = x;
+            }
+            if(level == 0) {
                 return next;
             } else {
                 level--;
@@ -180,7 +183,7 @@ typename SkipList<Key, Comparator>::Node *SkipList<Key, Comparator>::FindLessTha
     while (true) {
         assert(x == head_ || compare_(x->key, key) < 0);
         Node *next = x->Next(level);
-        if (next == nullptr || compare_(next->ket, key) >= 0) {
+        if (next == nullptr || compare_(next->key, key) >= 0) {
             if (level == 0) {
                 return x;
             } else {
