@@ -12,10 +12,6 @@ class Arena {
 public:
     Arena();
     ~Arena();
-    // Arena(Arena const &) = delete;
-    // Arena(Arena &&) = delete;
-    // Arena &operator=(Arena const &) = delete;
-    // Arena &operator=(Arena &&) = delete;
 
     uint8_t *Allocate(uint64_t bytes);
     uint8_t *AllocateAligned(uint64_t bytes);
