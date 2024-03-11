@@ -23,4 +23,4 @@ add_executable(${PROJECT_NAME}
     ${PROJECT_NAME}.cpp
     ${SOURCE_LIST}
 )
-target_link_libraries(${PROJECT_NAME} libgtest.so libpthread.so)
+target_link_libraries(${PROJECT_NAME} libgtest.a -pthread)
