@@ -1,12 +1,12 @@
-#include "skiplist.h"
+#include "skip_list.h"
 #include "random.h"
 #include <set>
 #include <gtest/gtest.h>
 #include <cstdint>
 
-using namespace ns_data_structure::ns_skip_list;
-using namespace ns_memory::ns_arena;
-using namespace ns_algorithm::ns_random;
+using namespace ns_data_structure;
+using namespace ns_memory;
+using namespace ns_algorithm;
 using namespace std;
 
 using Key = uint64_t;

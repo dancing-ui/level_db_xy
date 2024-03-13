@@ -9,7 +9,7 @@
 #include <cstdint>
 
 namespace ns_data_structure {
-namespace ns_skip_list {
+
 static constexpr int32_t kMaxHeight = 12;
 
 template <typename Key, typename Comparator>
@@ -18,7 +18,7 @@ private:
     struct Node;
 
 public:
-    explicit SkipList(Comparator cmp, ns_memory::ns_arena::Arena *arena);
+    explicit SkipList(Comparator cmp, ns_memory::Arena *arena);
     SkipList(SkipList const &) = delete;
     SkipList(SkipList &&) = delete;
     SkipList &operator=(SkipList const &) = delete;
@@ -53,10 +53,10 @@ private:
     Node *FindLessThan(Key const &key) const;
     Node *FindLast() const;
     Comparator const compare_;
-    ns_memory::ns_arena::Arena *const arena_;
+    ns_memory::Arena *const arena_;
     Node *const head_;
     std::atomic<int32_t> max_height_;
-    ns_algorithm::ns_random::Random rnd_;
+    ns_algorithm::Random rnd_;
 };
 
 template <typename Key, typename Comparator>
@@ -90,12 +90,12 @@ private:
  * SkipList Impl
  */
 template <typename Key, typename Comparator>
-SkipList<Key, Comparator>::SkipList(Comparator cmp, ns_memory::ns_arena::Arena *arena) :
+SkipList<Key, Comparator>::SkipList(Comparator cmp, ns_memory::Arena *arena) :
     compare_(cmp),
     arena_(arena),
     head_(NewNode(0, kMaxHeight)),
     max_height_(1),
-    rnd_(0xdeadbeef) {
+    rnd_(0xDEADBEEFU) {
     for (int32_t i = 0; i < kMaxHeight; i++) {
         head_->SetNext(i, nullptr);
     }
@@ -259,7 +259,7 @@ void SkipList<Key, Comparator>::Iterator::SeekToLast() {
     }
 }
 
-} // ns_skip_list
+
 } // ns_data_structure
 
 #endif

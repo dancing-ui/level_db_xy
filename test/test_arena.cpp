@@ -1,5 +1,5 @@
 #include "arena.h"
-using namespace ns_memory::ns_arena;
+using namespace ns_memory;
 
 void check1() {
     {

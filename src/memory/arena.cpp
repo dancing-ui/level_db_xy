@@ -3,7 +3,7 @@
 #include <cassert>
 
 namespace ns_memory {
-namespace ns_arena {
+
 static constexpr int32_t kBlockSize{4096};
 
 Arena::Arena() {
@@ -66,5 +66,4 @@ uint8_t *Arena::AllocateNewBlock(uint64_t block_bytes) {
     return result;
 }
 
-} // ns_arena
 } // ns_memory

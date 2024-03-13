@@ -11,6 +11,9 @@ set(SRC_DIR
     memory
     log
     algorithm
+    comparator
+    db_format
+    util
 )
 
 foreach(DIR ${SRC_DIR})

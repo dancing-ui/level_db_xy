@@ -3,7 +3,10 @@
 rm -r build
 mkdir build
 cd build
-cmake .. 
+
+cmake -DTEST_FILE_NAME=test_${1} .. 
 make -j20
 
-test/${1}
+if [ -n "${1}" ]; then
+    test/test_${1}
+fi

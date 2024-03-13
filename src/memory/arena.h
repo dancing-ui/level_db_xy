@@ -6,7 +6,6 @@
 #include <atomic>
 
 namespace ns_memory {
-namespace ns_arena {
 
 class Arena {
 public:
@@ -27,7 +26,6 @@ private:
     std::atomic<uint64_t> memory_usage_;
 };
 
-} // ns_arena
 } // ns_memory
 
 #endif

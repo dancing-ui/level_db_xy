@@ -4,7 +4,7 @@
 #include <cstdint>
 
 namespace ns_algorithm {
-namespace ns_random {
+
 
 class Random {
 private:
@@ -39,7 +39,6 @@ public:
     }
 };
 
-} // ns_random
 } // ns_algorithm
 
 #endif
