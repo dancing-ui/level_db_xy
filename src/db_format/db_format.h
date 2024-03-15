@@ -36,9 +36,9 @@ inline ns_data_structure::Slice ExtractUserKey(ns_data_structure::Slice const &i
     return ns_data_structure::Slice(internal_key.data(), internal_key.size() - 8);
 }
 
-inline bool ParseInternalKey(ns_data_structure::Slice const& internal_key, ParsedInternalKey* result) {
+inline bool ParseInternalKey(ns_data_structure::Slice const &internal_key, ParsedInternalKey *result) {
     uint64_t const n = internal_key.size();
-    if(n < 8) {
+    if (n < 8) {
         return false;
     }
     uint64_t num = ns_util::DecodeFixed64(internal_key.data() + n - 8);
@@ -106,6 +106,38 @@ public:
     int32_t Compare(InternalKey const &a, InternalKey const &b) const {
         return Compare(a.Encode(), b.Encode());
     }
+};
+
+class LookupKey {
+public:
+    LookupKey(ns_data_structure::Slice const &user_key, SequenceNumber sequence);
+    LookupKey(LookupKey const &) = delete;
+    LookupKey &operator=(LookupKey const &) = delete;
+    ~LookupKey() {
+        if (start_ != space_) {
+            delete[] start_;
+        }
+    }
+    ns_data_structure::Slice memtable_key() const {
+        return ns_data_structure::Slice(start_, end_ - start_);
+    }
+    ns_data_structure::Slice internal_key() const {
+        return ns_data_structure::Slice(kstart_, end_ - kstart_);
+    }
+    ns_data_structure::Slice user_key() const {
+        return ns_data_structure::Slice(kstart_, end_ - kstart_ - 8);
+    }
+
+private:
+    // We construct a char array of the form:
+    //    klength  varint32               <-- start_
+    //    userkey  char[klength]          <-- kstart_
+    //    tag      uint64
+    //                                    <-- end_
+    uint8_t const *start_;
+    uint8_t const *kstart_;
+    uint8_t const *end_;
+    uint8_t space_[200];
 };
 
 } // ns_db_format

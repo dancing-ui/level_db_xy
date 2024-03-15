@@ -62,6 +62,56 @@ TEST(FormatTest, InternalKey_EncodeDecode) {
     }
 }
 
+TEST(FormatTest, InternalKey_DecodeFromEmpty) {
+    InternalKey internal_key;
+    ASSERT_TRUE(!internal_key.DecodeFrom(""));
+}
+
+TEST(FormatTest, InternalKeyShortSeparator) {
+    // same user keys
+    ASSERT_EQ(IKey("foo", 100, ValueType::kTypeValue),
+              Shorten(IKey("foo", 100, ValueType::kTypeValue),IKey("foo", 99, ValueType::kTypeValue)));
+    ASSERT_EQ(IKey("foo", 100, ValueType::kTypeValue), 
+              Shorten(IKey("foo", 100, ValueType::kTypeValue), IKey("foo", 101, ValueType::kTypeValue)));
+    ASSERT_EQ(IKey("foo", 100, ValueType::kTypeValue), 
+              Shorten(IKey("foo", 100, ValueType::kTypeValue), IKey("foo", 100, ValueType::kTypeValue)));
+    // misordered user keys
+    ASSERT_EQ(IKey("foo", 100, ValueType::kTypeValue), 
+              Shorten(IKey("foo", 100, ValueType::kTypeValue), IKey("bar", 99, ValueType::kTypeValue)));
+    // 
+    ASSERT_EQ(IKey("g", kMaxSequenceNumber, kValueTypeForSeek),
+              Shorten(IKey("foo", 100, ValueType::kTypeValue), IKey("hello", 200, ValueType::kTypeValue)));
+    // When start user key is prefix of limit user key
+    ASSERT_EQ(IKey("foo", 100, ValueType::kTypeValue),
+        Shorten(IKey("foo", 100, ValueType::kTypeValue), IKey("foobar", 200, ValueType::kTypeValue)));
+
+    // When limit user key is prefix of start user key
+    ASSERT_EQ(IKey("foobar", 100, ValueType::kTypeValue),
+        Shorten(IKey("foobar", 100, ValueType::kTypeValue), IKey("foo", 200, ValueType::kTypeValue)));
+}
+
+
+TEST(FormatTest, InternalKeyShortestSuccessor) {
+  ASSERT_EQ(IKey("g", kMaxSequenceNumber, kValueTypeForSeek),
+            ShortSuccessor(IKey("foo", 100, kTypeValue)));
+  ASSERT_EQ(IKey("\xff\xff", 100, kTypeValue),
+            ShortSuccessor(IKey("\xff\xff", 100, kTypeValue)));
+}
+
+TEST(FormatTest, ParsedInternalKeyDebugString) {
+  ParsedInternalKey key("The \"key\" in 'single quotes'", 42, kTypeValue);
+
+  ASSERT_EQ("'The \"key\" in 'single quotes'' @ 42 : 1", key.DebugString());
+}
+
+TEST(FormatTest, InternalKeyDebugString) {
+  InternalKey key("The \"key\" in 'single quotes'", 42, kTypeValue);
+  ASSERT_EQ("'The \"key\" in 'single quotes'' @ 42 : 1", key.DebugString());
+
+  InternalKey invalid_key;
+  ASSERT_EQ("(bad)", invalid_key.DebugString());
+}
+
 int main(int argc, char **argv) {
     PRINT_INFO("Running main() from %s\n", __FILE__);
     testing::InitGoogleTest(&argc, argv);

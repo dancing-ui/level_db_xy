@@ -1,5 +1,6 @@
 #include "db_format.h"
 #include "logging.h"
+#include "coding.h"
 #include <sstream>
 
 namespace ns_db_format {
@@ -69,6 +70,25 @@ void InternalKeyComparator::FindShortSuccessor(std::string *key) const {
         assert(this->Compare(*key, tmp) < 0);
         key->swap(tmp);
     }
+}
+
+LookupKey::LookupKey(ns_data_structure::Slice const &user_key, SequenceNumber sequence) {
+    uint64_t usize = user_key.size();
+    uint64_t needed = usize + 13; // 13 is a conservative estimate
+    uint8_t *dst;
+    if (needed <= sizeof(space_)) {
+        dst = space_;
+    } else {
+        dst = new uint8_t[needed];
+    }
+    start_ = dst;
+    dst = ns_util::EncodeVarint32(dst, usize + 8);
+    kstart_ = dst;
+    std::memcpy(dst, user_key.data(), usize);
+    dst += usize;
+    ns_util::EncodeFixed64(dst, PackSequenceAndType(sequence, kValueTypeForSeek));
+    dst += 8;
+    end_ = dst;
 }
 
 } // ns_db_format

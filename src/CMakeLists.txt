@@ -14,6 +14,7 @@ set(SRC_DIR
     comparator
     db_format
     util
+    iterator
 )
 
 foreach(DIR ${SRC_DIR})

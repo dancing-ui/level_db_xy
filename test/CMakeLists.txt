@@ -24,7 +24,7 @@ foreach(DIR ${SRC_DIR})
 endforeach()
 
 if("${TEST_FILE_NAME}" STREQUAL "test_")
-    message("no test")
+    
 else()
     add_executable(${TEST_FILE_NAME} 
         ${TEST_FILE_NAME}.cpp
