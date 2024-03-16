@@ -15,6 +15,7 @@ set(SRC_DIR
     comparator
     db_format
     util
+    iterator
 )
 
 

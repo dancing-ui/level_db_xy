@@ -71,6 +71,8 @@
         "typeindex": "cpp",
         "valarray": "cpp",
         "variant": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp"
     }
 }

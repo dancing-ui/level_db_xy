@@ -1,4 +1,4 @@
-# InternalKey
+# [InternalKey](https://zhuanlan.zhihu.com/p/272468157)
 主键由3部分构成：User key + Sequence number + Value Type
 1. User key是Slice
 2. Sequence number是一个uint64_t类型（8字节无符号正整数）且一直递增的整数

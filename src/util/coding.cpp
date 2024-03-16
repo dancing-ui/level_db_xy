@@ -2,6 +2,12 @@
 
 namespace ns_util {
 
+void PutVarint32(std::string* dst, uint32_t value) {
+    uint8_t buf[5];
+    uint8_t* ptr = EncodeVarint32(buf, value);
+    dst->append(reinterpret_cast<char*>(buf), ptr - buf);
+}
+
 void PutFixed64(std::string *dst, uint64_t value) {
     uint8_t buf[sizeof(value)];
     EncodeFixed64(buf, value);
@@ -9,13 +15,6 @@ void PutFixed64(std::string *dst, uint64_t value) {
 }
 
 uint8_t *EncodeVarint32(uint8_t *dst, uint32_t value) {
-    /**
-     * 每个字节的最高位（bit）有特殊含义
-     * 如果该位为 0，表示结束，当前字节的剩余 7 位就是该数据的表示。
-     *      表示整数 1，需要一个字节：0000 0001
-     * 如果该位为 1，表示后续的字节也是该整型数据的一部分；
-     *      表示整数 300，需要两个字节：1010 1100 0000 0010
-    */
     static constexpr uint8_t B = 1 << 7;
     if (value < (1U << 7)) {
         *(dst++) = value;
@@ -56,6 +55,16 @@ uint8_t const *GetVarint32Ptr(uint8_t const *p, uint8_t const *limit, uint32_t *
         }
     }
     return nullptr;
+}
+
+int32_t VarintLength(uint64_t value) {
+    static constexpr uint8_t B = 1 << 7;
+    int32_t len = 1;
+    while(value >= B) {
+        value >>= 7;
+        len++;
+    }
+    return len;
 }
 
 } // ns_util
