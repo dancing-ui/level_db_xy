@@ -22,8 +22,10 @@ SSTable 按照数据从新到旧被组织成多个层次（上层新下层旧）
 ## 版本控制
 1. googletest==>v1.14.0
 ## time schedule
-2024.03.10-2024.03-14
+2024.03.10-2024.03-16
 1. 1天完成Slice
 2. 1天内存分配器arena
 3. 1天完成SkipList
 4. 3天完成memtable [参考链接](https://cloud.tencent.com/developer/article/1625049)
+5. 2天完成日志读写
+6. 3天完成WriteBatch[参考链接](https://xiaobazhang.github.io/2019/01/30/leveldb%E4%B8%ADWriteBatch%E5%86%99%E6%93%8D%E4%BD%9C/)

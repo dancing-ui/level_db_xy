@@ -15,6 +15,9 @@ set(SRC_DIR
     db_format
     util
     iterator
+    log_writer
+    log_reader
+    env
 )
 
 foreach(DIR ${SRC_DIR})
