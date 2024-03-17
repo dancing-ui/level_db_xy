@@ -1,4 +1,4 @@
-# 日志格式
+# [日志格式](https://juejin.cn/post/6844904137323184135)
 ![alt text](../../img/log.png)
 
 # Writer::Writer(ns_env::WritableFile *dest, uint64_t dest_length)
