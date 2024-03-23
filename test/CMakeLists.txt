@@ -8,14 +8,18 @@ set(CMAKE_BUILD_TYPE "Debug")
 set(CMAKE_CXX_FLAGS "-rdynamic -fPIC -ggdb -std=c++17 -Wall -Wno-deprecated -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations")
 
 set(SRC_DIR 
-    data_structure
-    memory
-    log
     algorithm
     comparator
+    data_structure
     db_format
-    util
+    env
     iterator
+    log
+    log_reader
+    log_writer
+    memory
+    util
+    write_batch
 )
 
 

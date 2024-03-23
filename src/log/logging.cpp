@@ -22,5 +22,16 @@ std::string EscapeString(ns_data_structure::Slice const& value) {
     return ret;
 }
 
+void AppendNumberTo(std::string* str, uint64_t num) {
+    char buf[30];
+    std::snprintf(buf, sizeof(buf), "%llu", static_cast<unsigned long long>(num));
+    str->append(buf);
+}
+
+std::string NumberToString(uint64_t num) {
+    std::string r;
+    AppendNumberTo(&r, num);
+    return r;
+}
 
 } // ns_log

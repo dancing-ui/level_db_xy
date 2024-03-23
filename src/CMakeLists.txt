@@ -7,17 +7,18 @@ set(CMAKE_BUILD_TYPE "Release")
 set(CMAKE_CXX_FLAGS "-rdynamic -fPIC -ggdb -std=c++17 -Wall -Wno-deprecated -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations")
 
 set(SRC_DIR 
-    data_structure
-    memory
-    log
     algorithm
     comparator
+    data_structure
     db_format
-    util
-    iterator
-    log_writer
-    log_reader
     env
+    iterator
+    log
+    log_reader
+    log_writer
+    memory
+    util
+    write_batch
 )
 
 foreach(DIR ${SRC_DIR})
