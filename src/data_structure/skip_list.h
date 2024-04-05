@@ -84,7 +84,7 @@ struct SkipList<Key, Comparator>::Node {
     }
 
 private:
-    std::atomic<Node *> next_[1]; // 为了可以使用下标访问，如 next_[i]
+    std::atomic<Node *> next_[1]; // 柔性数组
 };
 /**
  * SkipList Impl

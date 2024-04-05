@@ -8,15 +8,19 @@ set(CMAKE_CXX_FLAGS "-rdynamic -fPIC -ggdb -std=c++17 -Wall -Wno-deprecated -Wno
 
 set(SRC_DIR 
     algorithm
+    block_builder
+    cache
     comparator
     data_structure
     db_format
     env
+    filter_policy
     iterator
     log
     log_reader
     log_writer
     memory
+    options
     util
     write_batch
 )

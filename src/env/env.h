@@ -33,6 +33,27 @@ public:
     virtual ns_util::Status Skip(uint64_t n) = 0;
 };
 
+class Env {
+public:
+    Env() = default;
+    Env(Env const&) = delete;
+    Env& operator=(Env const&) =delete;
+
+    virtual ~Env() = default;
+
+    // static Env* Default();
+
+};
+
+class Logger {
+public:
+    Logger() = default;
+    Logger(Logger const&) = delete;
+    Logger& operator=(Logger const&) = delete;
+    virtual ~Logger() = default;
+    // virtual void Logv(char)
+};
+
 } // ns_env
 
 #endif

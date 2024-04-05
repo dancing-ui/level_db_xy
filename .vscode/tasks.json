@@ -10,7 +10,7 @@
                 ".."
             ],
             "options": {
-                "cwd": "${fileDirname}/build/"
+                "cwd": "${workspaceFolder}/build/"
             },
         },
         {
@@ -21,7 +21,7 @@
                 "-j20"
             ],
             "options": {
-                "cwd": "${fileDirname}/build/"
+                "cwd": "${workspaceFolder}/build/"
             },
             "dependsOn": [
                 "Cmake"

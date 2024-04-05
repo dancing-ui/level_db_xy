@@ -8,6 +8,7 @@
 namespace ns_util {
 
 void PutVarint32(std::string *dst, uint32_t value);
+void PutFixed32(std::string* dst, uint32_t value);
 void PutFixed64(std::string *dst, uint64_t value);
 void PutLengthPrefixedSlice(std::string* dst, ns_data_structure::Slice const& value);
 

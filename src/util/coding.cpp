@@ -8,6 +8,12 @@ void PutVarint32(std::string* dst, uint32_t value) {
     dst->append(reinterpret_cast<char*>(buf), ptr - buf);
 }
 
+void PutFixed32(std::string* dst, uint32_t value) {
+    uint8_t buf[sizeof(value)];
+    EncodeFixed32(buf, value);
+    dst->append(reinterpret_cast<char*>(buf), sizeof(buf));
+}
+
 void PutFixed64(std::string *dst, uint64_t value) {
     uint8_t buf[sizeof(value)];
     EncodeFixed64(buf, value);
