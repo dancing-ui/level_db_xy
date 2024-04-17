@@ -62,7 +62,7 @@ public:
         }
         return ret;
     }
-    bool start_with(Slice const& x) const {
+    bool starts_with(Slice const& x) const {
         return ((size() >= x.size()) && (memcmp(data(), x.data(), x.size()) == 0));
     }
 

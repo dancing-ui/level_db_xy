@@ -4,6 +4,7 @@ rm -r build
 mkdir build
 cd build
 
+# cmake -DTEST_FILE_NAME=test_${1} -DCMAKE_C_COMPILER="/usr/bin/clang" -DCMAKE_CXX_COMPILER="/usr/bin/clang++" .. 
 cmake -DTEST_FILE_NAME=test_${1} .. 
 make -j20
 

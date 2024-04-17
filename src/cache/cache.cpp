@@ -11,7 +11,7 @@ namespace {
 
 struct LRUHandle {
     void *value;
-    void (*deleter)(ns_data_structure::Slice const &key, void *value);
+    DeleteFunc deleter;
     LRUHandle *next_hash;
     LRUHandle *next;
     LRUHandle *prev;
@@ -21,6 +21,26 @@ struct LRUHandle {
     uint32_t refs;       // References, including cache reference, if present.
     uint32_t hash;       // Hash of key(); used for fast sharding and comparisons
     uint8_t key_data[1]; // Beginning of key
+
+    LRUHandle() {
+        next_hash = nullptr;
+        next = nullptr;
+        prev = nullptr;
+    }
+
+    LRUHandle(void *v, DeleteFunc const &del, uint64_t c, ns_data_structure::Slice const &key, uint32_t h) {
+        value = v;
+        deleter = del;
+        next_hash = nullptr;
+        next = nullptr;
+        prev = nullptr;
+        charge = c;
+        key_length = key.size();
+        in_cache = false;
+        refs = 1; // for the returned handle.
+        hash = h;
+        std::memcpy(key_data, key.data(), key.size());
+    }
 
     ns_data_structure::Slice key() const {
         assert(next != this);
@@ -121,7 +141,7 @@ public:
         capacity_ = capacity;
     }
 
-    Cache::Handle *Insert(ns_data_structure::Slice const &key, uint32_t hash, void *value, uint64_t charge, void (*deleter)(ns_data_structure::Slice const &key, void *value));
+    Cache::Handle *Insert(ns_data_structure::Slice const &key, uint32_t hash, void *value, uint64_t charge, DeleteFunc const &deleter);
     Cache::Handle *Lookup(ns_data_structure::Slice const &key, uint32_t hash);
     void Release(Cache::Handle *handle);
     void Erase(ns_data_structure::Slice const &key, uint32_t hash);
@@ -168,17 +188,10 @@ LRUCache::~LRUCache() {
     }
 }
 
-Cache::Handle *LRUCache::Insert(ns_data_structure::Slice const &key, uint32_t hash, void *value, uint64_t charge, void (*deleter)(ns_data_structure::Slice const &key, void *value)) {
+Cache::Handle *LRUCache::Insert(ns_data_structure::Slice const &key, uint32_t hash, void *value, uint64_t charge, DeleteFunc const &deleter) {
     std::unique_lock<std::mutex> lck(mutex_);
-    LRUHandle *e = reinterpret_cast<LRUHandle *>(malloc(sizeof(LRUHandle) - 1 + key.size()));
-    e->value = value;
-    e->deleter = deleter;
-    e->charge = charge;
-    e->key_length = key.size();
-    e->hash = hash;
-    e->in_cache = false;
-    e->refs = 1; // for the returned handle.
-    std::memcpy(e->key_data, key.data(), key.size());
+    uint8_t *handle_mem = new uint8_t[sizeof(LRUHandle) - 1 + key.size()];
+    LRUHandle *e = new (handle_mem) LRUHandle(value, deleter, charge, key, hash);
     if (capacity_ > 0) {
         e->refs++; // for the cache's reference.
         e->in_cache = true;
@@ -252,7 +265,7 @@ void LRUCache::Unref(LRUHandle *e) {
     if (e->refs == 0) { // Deallocate.
         assert(!e->in_cache);
         e->deleter(e->key(), e->value);
-        free(e);
+        delete[] (reinterpret_cast<uint8_t *>(e));
     } else if (e->in_cache && e->refs == 1) {
         // No longer in use; move to lru_ list.
         LRU_Remove(e);
@@ -285,7 +298,7 @@ public:
     ~ShardedLRUCache() override {
     }
     Handle *Insert(ns_data_structure::Slice const &key, void *value, uint64_t charge,
-                   void (*deleter)(ns_data_structure::Slice const &key, void *value)) override {
+                   DeleteFunc const &deleter) override {
         uint32_t const hash = HashSlice(key);
         return shard_[Shard(hash)].Insert(key, hash, value, charge, deleter);
     }

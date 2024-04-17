@@ -31,9 +31,10 @@ SSTable 按照数据从新到旧被组织成多个层次（上层新下层旧）
 6. 5天完成Sorted Strings Table(SSTable)部分
    1. 完成FilterPolicy
       1. 完成默认提供的BloomFilter [参考链接](https://sf-zhou.github.io/leveldb/leveldb_02_data_structure.html)
-   2. 完成Cache
-   3. 完成Logger
+   2. 完成Cache，实际花费2天
+   3. 完成Logger，完成logger_posix，目前仅支持posix，
    4. 完成Env
+      1. 准备实现env_posix，这玩意是真难写啊
    5. 完成Options
    6. 完成BlockBuilder
    7. 

@@ -6,6 +6,8 @@
 
 namespace ns_cache {
 
+using DeleteFunc = std::function<void(ns_data_structure::Slice const &, void *)>;
+
 class Cache {
 public:
     Cache() = default;
@@ -26,7 +28,7 @@ public:
     // When the inserted entry is no longer needed, the key and
     // value will be passed to "deleter".
     virtual Handle *Insert(ns_data_structure::Slice const &key, void *value, uint64_t charge,
-                           void (*deleter)(ns_data_structure::Slice const &key, void *value)) = 0;
+                           DeleteFunc const &deleter) = 0;
     // If the cache has no mapping for "key", returns nullptr.
     //
     // Else return a handle that corresponds to the mapping.  The caller

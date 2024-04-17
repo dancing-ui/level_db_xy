@@ -20,4 +20,9 @@
   THREAD_ANNOTATION_ATTRIBUTE__(exclusive_locks_required(__VA_ARGS__))
 #endif // EXCLUSIVE_LOCKS_REQUIRED
 
+#ifndef LOCKS_EXCLUDED
+#define LOCKS_EXCLUDED(...) \
+  THREAD_ANNOTATION_ATTRIBUTE__(locks_excluded(__VA_ARGS__))
+#endif
+
 #endif

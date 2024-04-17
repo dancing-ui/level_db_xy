@@ -29,6 +29,11 @@
 作用：in_cache为真，表示handle在哈希表中，否则不在哈希表中。
 
 背景：用户可能会插入相同的key，指向不同的value，这种情况下，前一次插入的value应该被新的value替换，但如果还有外部引用，就不能将其释放，这种情况下，就会出现哈希表中没有，但仍然没有被释放的 handle。当外部引用释放这个handle时，才会真正调用deleter将其资源释放。in_cache为真时，handle总能在哈希表中找到，总能在in_use_或lru_中找到；如果in_cache为假，无论在哈希表中还是链表中都没有它。
+# value字段
+value 缓存存储的对象，这里类型是 void*，也就是说这个缓存结构可以存储任意类型的值，同时也说明类型由用户确定，淘汰时需要调用用户指定的清理函数来释放这个地址指向的资源。
+
+# 关于LRUHandle内存分配的问题
+由于我将原来的函数指针改成了std::function，将LRUHandle变成了非平凡类型，所以不能直接将malloc分配的内存直接给LRUHandle。所以我改成了使用new uint8_t[]及placement new的方式为LRUHandle分配内存，记得最后释放的时候需要释放uint8_t[]，而不是LRUHandle*，用法是：operator delete[](e, sizeof(LRUHandle) - 1 + e->key_length);
 
 # LRUCache讲解
 https://bean-li.github.io/leveldb-LRUCache/
