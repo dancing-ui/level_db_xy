@@ -36,5 +36,8 @@ SSTable 按照数据从新到旧被组织成多个层次（上层新下层旧）
    4. 完成Env
       1. 准备实现env_posix，这玩意是真难写啊
    5. 完成Options
+      1. 集成zstd压缩
+      2. 完成snapshot
+      3. 补齐log_reader、log_writer缺失的crc校验
    6. 完成BlockBuilder
    7. 

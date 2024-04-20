@@ -1,10 +1,14 @@
 #!/bin/bash
 
-rm -r build
+if [[ -d "build" ]]; then
+    rm -r build
+fi
 mkdir build
 cd build
 
 # cmake -DTEST_FILE_NAME=test_${1} -DCMAKE_C_COMPILER="/usr/bin/clang" -DCMAKE_CXX_COMPILER="/usr/bin/clang++" .. 
+# --debug-trycompile可以用于查看check_cxx_symbol_exists的查找情况
+# cmake -DTEST_FILE_NAME=test_${1} --debug-trycompile .. 
 cmake -DTEST_FILE_NAME=test_${1} .. 
 make -j20
 

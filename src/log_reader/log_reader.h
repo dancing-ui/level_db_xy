@@ -13,7 +13,7 @@ public:
     class Reporter {
     public:
         virtual ~Reporter() = default;
-        virtual void Corruption(uint64_t bytes, ns_util::Status const& status);
+        virtual void Corruption(uint64_t bytes, ns_util::Status const& status) = 0;
     };
 
     Reader(ns_env::SequentialFile* file, Reporter* reporter, bool checksum, uint64_t initial_offset);
