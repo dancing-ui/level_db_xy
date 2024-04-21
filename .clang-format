@@ -128,7 +128,7 @@ Cpp11BracedListStyle: true
 DerivePointerAlignment: false
 
 # 固定命名空间注释
-FixNamespaceComments: true
+FixNamespaceComments: false
 
 # 缩进case标签
 IndentCaseLabels: false
