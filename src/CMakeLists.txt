@@ -11,6 +11,7 @@ set(SRC_DIR
     block_builder
     cache
     comparator
+    compression
     data_structure
     db_format
     env
@@ -58,9 +59,8 @@ endif()
 
 set(DEPEND_LIB "")
 
-include(CheckLibraryExists)
-check_library_exists(crc32c crc32c_value "" CMAKE_HAVE_CRC32C)
-if (CMAKE_HAVE_CRC32C)
+find_library(CRC32C_LIBRARY NAMES crc32c PATHS "/usr/local/lib")
+if (CRC32C_LIBRARY)
     message("[INFO] [SRC] Found crc32c")
     add_definitions(-DHAVE_CRC32C)
     list(APPEND DEPEND_LIB crc32c)

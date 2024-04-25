@@ -1,4 +1,6 @@
 #include "log_reader.h"
+#include "crc32c.h"
+#include "coding.h"
 
 namespace ns_log_reader {
 
@@ -175,17 +177,24 @@ uint32_t Reader::ReadPhysicalRecord(ns_data_structure::Slice *result) {
             return kEof;
         }
 
-        if(type == ns_log::RecordType::kZeroType && length == 0) {
+        if (type == ns_log::RecordType::kZeroType && length == 0) {
             buffer_.clear();
             return kBadRecord;
         }
-
-        if(checksum_) {
-            //TODO: add the crc verification
+        // Check crc
+        if (checksum_) {
+            uint32_t expected_crc = ns_util::Unmask(ns_util::DecodeFixed32(header));
+            uint32_t actual_crc = ns_util::Value(header + 6, 1 + length);
+            if (actual_crc != expected_crc) {
+                uint64_t drop_size = buffer_.size();
+                buffer_.clear();
+                ReportCorruption(drop_size, "checksum mismatch");
+                return kBadRecord;
+            }
         }
 
         buffer_.remove_prefix(ns_log::kHeaderSize + length);
-        if(end_of_buffer_offset_ - buffer_.size() - ns_log::kHeaderSize - length < initial_offset_) {
+        if (end_of_buffer_offset_ - buffer_.size() - ns_log::kHeaderSize - length < initial_offset_) {
             result->clear();
             return kBadRecord;
         }

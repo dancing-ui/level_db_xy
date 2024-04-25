@@ -2,7 +2,7 @@
 #include "log.h"
 #include <gtest/gtest.h>
 
-using namespace ns_no_destructor;
+using namespace ns_util;
 
 struct DoNotDestruct {
 public:

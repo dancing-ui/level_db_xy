@@ -1,10 +1,15 @@
 #include "log_writer.h"
 #include "coding.h"
+#include "crc32c.h"
+#include "log_format.h"
 
 namespace ns_log_writer {
 
 static void InitTypeCrc(uint32_t *type_crc) {
-    //TODO: init the crc
+    for (int32_t i = 0; i <= ns_log::kMaxRecordType; i++) {
+        uint8_t t = static_cast<uint8_t>(i);
+        type_crc[i] = ns_util::Value(&t, 1);
+    }
 }
 
 Writer::Writer(ns_env::WritableFile *dest) :
@@ -63,8 +68,9 @@ ns_util::Status Writer::EmitPhysicalRecord(ns_log::RecordType type, uint8_t cons
     buf[5] = length >> 8;
     buf[6] = type;
 
-    // TODO: generate the crc32
-    uint32_t crc = 0;
+    // generate the crc32
+    uint32_t crc = ns_util::Extend(type_crc_[type], ptr, length);
+    crc = ns_util::Mask(crc);
     ns_util::EncodeFixed32(buf, crc);
 
     // Write the header and the payload

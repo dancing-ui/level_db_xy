@@ -49,7 +49,7 @@ public:
 };
 
 Comparator const* BytewiseComparator() {
-    static ns_no_destructor::NoDestructor<BytewiseComparatorImpl> singleton;
+    static ns_util::NoDestructor<BytewiseComparatorImpl> singleton;
     return singleton.get();
 }
 

@@ -3,7 +3,7 @@
 
 #include <utility>
 
-namespace ns_no_destructor {
+namespace ns_util {
 
 template<typename InstanceType>
 class NoDestructor {
@@ -28,7 +28,7 @@ private:
     typename std::aligned_storage<sizeof(InstanceType), alignof(InstanceType)>::type instance_storage_;
 };
 
-} //  ns_no_destructor
+} //  ns_util
 
 
 #endif
