@@ -22,6 +22,7 @@ set(SRC_DIR
     log_writer
     memory
     options
+    snapshot
     util
     write_batch
 )

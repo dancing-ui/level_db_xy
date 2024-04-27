@@ -3,8 +3,8 @@
 
 namespace ns_options {
 
-// Options::Options() :
-//     comparator(ns_comparator::BytewiseComparator()), env(ns_env::Env::Default()) {
-// }
+Options::Options() :
+    comparator(ns_comparator::BytewiseComparator()), env(ns_env::Env::Default()) {
+}
 
 } // ns_options

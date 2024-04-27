@@ -35,6 +35,12 @@ value 缓存存储的对象，这里类型是 void*，也就是说这个缓存�
 # 关于LRUHandle内存分配的问题
 由于我将原来的函数指针改成了std::function，将LRUHandle变成了非平凡类型，所以不能直接将malloc分配的内存直接给LRUHandle。所以我改成了使用new uint8_t[]及placement new的方式为LRUHandle分配内存，记得最后释放的时候需要释放uint8_t[]，而不是LRUHandle*，用法是：operator delete[](e, sizeof(LRUHandle) - 1 + e->key_length);
 
+# Handle和LRUHandle
+Handle为空结构体，其目的是为了隐藏LRUHandle的具体实现细节，同时也方便出现新的XXXHandle时进行扩展
+## 题外话：tag dispatch
+空的结构体还可以用于模板中进行[tag dispatch](https://www.zhihu.com/question/500139885/answer/3163765847)
+在C++17中，被定位为std::monostate
+
 # LRUCache讲解
 https://bean-li.github.io/leveldb-LRUCache/
 
