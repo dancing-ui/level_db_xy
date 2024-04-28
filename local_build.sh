@@ -1,5 +1,11 @@
 #!/bin/bash
 
+function LogInfo {
+    log_info=$1
+    log_time=$(date +"[%Y-%m-%d %H:%M:%S]")
+    echo -e "$log_time $log_info"
+}
+
 if [[ -d "build" ]]; then
     rm -r build
 fi
@@ -22,11 +28,14 @@ rm -rf $debug_coredump_dir/*
 if [[ -f "$build_path/$build_file" ]]; then
     $build_path/$build_file
     if [[ $? -ne 0 ]]; then
+        LogInfo "[ERROR] 程序运行出现错误"
         coredump_file=$(ls -l $coredump_gen_dir | grep $build_file | tail -n1 | awk '{print $9}')
         echo $coredump_file
-        cp $coredump_gen_dir/$coredump_file $debug_coredump_dir
-        cp $build_path/$build_file $debug_coredump_dir
-        # gdb $debug_coredump_dir/$build_file $debug_coredump_dir/$coredump_file
-        echo -e "[FAIL] 程序发生严重错误，请检查coredump目录 "
+        if [[ "$coredump_file" != "" ]]; then
+            cp $coredump_gen_dir/$coredump_file $debug_coredump_dir
+            cp $build_path/$build_file $debug_coredump_dir
+            # gdb $debug_coredump_dir/$build_file $debug_coredump_dir/$coredump_file
+            LogInfo "[ERROR] 程序发生严重错误, 请检查coredump目录 "
+        fi
     fi
 fi
