@@ -1,6 +1,6 @@
 #include "block_builder.h"
 
-namespace ns_block_builder {
+namespace ns_table {
 
 BlockBuilder::BlockBuilder(ns_options::Options const *options) :
     options_(options), restarts_(), counter_(0), finished_(false) {
