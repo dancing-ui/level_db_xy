@@ -9,7 +9,6 @@ set(CMAKE_CXX_FLAGS "-fPIC -ggdb -std=c++17 -Wall -fno-inline -Wno-deprecated -W
 
 set(SRC_DIR 
     algorithm
-    block_builder
     cache
     comparator
     compression
@@ -24,6 +23,7 @@ set(SRC_DIR
     memory
     options
     snapshot
+    table
     util
     write_batch
 )

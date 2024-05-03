@@ -19,8 +19,11 @@ SSTable 按照数据从新到旧被组织成多个层次（上层新下层旧）
 ### WAL(Write Ahead Log)
 1. WAL预写日志，是数据库系统中常见的一种手段，用于保证数据操作的原子性和持久性。在使用 WAL 的系统中，所有的修改在提交之前都要先写入 log 文件中!
 
-## 版本控制
+## 组件版本控制
 1. googletest==>v1.14.0
+2. zstd==>v1.5.6
+3. snappy==>1.2.0
+4. crc32c==>1.1.0
 ## time schedule
 2024.03.10-2024.03-16
 1. 1天完成字符串视图Slice、内存分配器arena
@@ -40,4 +43,12 @@ SSTable 按照数据从新到旧被组织成多个层次（上层新下层旧）
       2. 完成snapshot
       3. 补齐log_reader、log_writer缺失的crc校验
    6. 完成BlockBuilder
-   7. 
+   7. 完成Block
+   8. 完成TableBuilder
+   9. 完成Table
+   10. 完成Table相关的操作
+       1.  遍历Table
+       2.  完成TableCache
+       3.  集成Bloom Filter到FilterBlock中
+7.  正式开始将之前的所有组件合并成一个高性能的NoSql！！！
+

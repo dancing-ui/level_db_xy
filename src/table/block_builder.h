@@ -3,7 +3,7 @@
 
 #include "options.h"
 
-namespace ns_block_builder {
+namespace ns_table {
 
 class BlockBuilder {
 public:
@@ -33,6 +33,6 @@ private:
     std::string last_key_;
 };
 
-} // ns_block_builder
+} // ns_table
 
 #endif
