@@ -17,7 +17,7 @@ Iterator::~Iterator() {
         }
     }
 }
-void Iterator::RegisterCleanup(CleanupFunction function, void *arg1, void *arg2) {
+void Iterator::RegisterCleanup(CleanupFunction const &function, void *arg1, void *arg2) {
     assert(function != nullptr);
     CleanupNode *node;
     if (cleanup_head_.IsEmpty()) {

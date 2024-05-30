@@ -2,16 +2,22 @@
 
 namespace ns_util {
 
-void PutVarint32(std::string* dst, uint32_t value) {
+void PutVarint32(std::string *dst, uint32_t value) {
     uint8_t buf[5];
-    uint8_t* ptr = EncodeVarint32(buf, value);
-    dst->append(reinterpret_cast<char*>(buf), ptr - buf);
+    uint8_t *ptr = EncodeVarint32(buf, value);
+    dst->append(reinterpret_cast<char *>(buf), ptr - buf);
 }
 
-void PutFixed32(std::string* dst, uint32_t value) {
+void PutVarint64(std::string *dst, uint64_t value) {
+    uint8_t buf[10];
+    uint8_t *ptr = EncodeVarint64(buf, value);
+    dst->append(reinterpret_cast<char const *>(buf), ptr - buf);
+}
+
+void PutFixed32(std::string *dst, uint32_t value) {
     uint8_t buf[sizeof(value)];
     EncodeFixed32(buf, value);
-    dst->append(reinterpret_cast<char*>(buf), sizeof(buf));
+    dst->append(reinterpret_cast<char *>(buf), sizeof(buf));
 }
 
 void PutFixed64(std::string *dst, uint64_t value) {
@@ -20,36 +26,36 @@ void PutFixed64(std::string *dst, uint64_t value) {
     dst->append(reinterpret_cast<char *>(buf), sizeof(buf));
 }
 
-void PutLengthPrefixedSlice(std::string* dst, ns_data_structure::Slice const& value) {
+void PutLengthPrefixedSlice(std::string *dst, ns_data_structure::Slice const &value) {
     PutVarint32(dst, value.size());
-    dst->append(reinterpret_cast<char const*>(value.data()), value.size());
+    dst->append(reinterpret_cast<char const *>(value.data()), value.size());
 }
 
-bool GetVarint32(ns_data_structure::Slice* input, uint32_t* value) {
-    uint8_t const* p = input->data();
-    uint8_t const* limit = p + input->size();
-    uint8_t const* q = GetVarint32Ptr(p, limit, value);
-    if(q == nullptr) {
+bool GetVarint32(ns_data_structure::Slice *input, uint32_t *value) {
+    uint8_t const *p = input->data();
+    uint8_t const *limit = p + input->size();
+    uint8_t const *q = GetVarint32Ptr(p, limit, value);
+    if (q == nullptr) {
         return false;
     }
     *input = ns_data_structure::Slice(q, limit - q);
     return true;
 }
 
-bool GetVarint64(ns_data_structure::Slice* input, uint64_t* value) {
-    uint8_t const* p = input->data();
-    uint8_t const* limit = p + input->size();
-    uint8_t const* q = GetVarint64Ptr(p, limit, value);
-    if(q == nullptr) {
+bool GetVarint64(ns_data_structure::Slice *input, uint64_t *value) {
+    uint8_t const *p = input->data();
+    uint8_t const *limit = p + input->size();
+    uint8_t const *q = GetVarint64Ptr(p, limit, value);
+    if (q == nullptr) {
         return false;
     }
     *input = ns_data_structure::Slice(q, limit - q);
     return true;
 }
 
-bool GetLengthPrefixedSlice(ns_data_structure::Slice * input, ns_data_structure::Slice* result) {
+bool GetLengthPrefixedSlice(ns_data_structure::Slice *input, ns_data_structure::Slice *result) {
     uint32_t len;
-    if(GetVarint32(input, &len) && input->size() >= len) {
+    if (GetVarint32(input, &len) && input->size() >= len) {
         *result = ns_data_structure::Slice(input->data(), len);
         input->remove_prefix(len);
         return true;
@@ -81,6 +87,17 @@ uint8_t *EncodeVarint32(uint8_t *dst, uint32_t value) {
         *(dst++) = value >> 28;
     }
     return dst;
+}
+
+uint8_t *EncodeVarint64(uint8_t *dst, uint64_t value) {
+    static constexpr uint8_t B = 1 << 7;
+    uint8_t *ptr = dst;
+    while (value >= B) {
+        *(ptr++) = value | B;
+        value >>= 7;
+    }
+    *(ptr++) = static_cast<uint8_t>(value);
+    return ptr;
 }
 
 uint8_t const *GetVarint32Ptr(uint8_t const *p, uint8_t const *limit, uint32_t *value) {
@@ -120,7 +137,7 @@ uint8_t const *GetVarint64Ptr(uint8_t const *p, uint8_t const *limit, uint64_t *
 int32_t VarintLength(uint64_t value) {
     static constexpr uint8_t B = 1 << 7;
     int32_t len = 1;
-    while(value >= B) {
+    while (value >= B) {
         value >>= 7;
         len++;
     }

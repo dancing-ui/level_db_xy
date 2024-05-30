@@ -26,7 +26,7 @@ public:
     virtual ns_util::Status status() const = 0;
 
     using CleanupFunction = std::function<void(void *arg1, void *arg2)>;
-    void RegisterCleanup(CleanupFunction function, void *arg1, void *arg2);
+    void RegisterCleanup(CleanupFunction const &function, void *arg1, void *arg2);
 
 private:
     struct CleanupNode {
@@ -40,13 +40,13 @@ private:
         CleanupFunction function;
         void *arg1;
         void *arg2;
-        CleanupNode* next;
+        CleanupNode *next;
     };
     CleanupNode cleanup_head_;
 };
 
-Iterator* NewEmptyIterator();
-Iterator* NewErrorIterator(ns_util::Status const& status);
+Iterator *NewEmptyIterator();
+Iterator *NewErrorIterator(ns_util::Status const &status);
 
 } // ns_iterator
 

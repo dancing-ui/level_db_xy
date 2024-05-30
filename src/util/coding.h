@@ -8,6 +8,7 @@
 namespace ns_util {
 
 void PutVarint32(std::string *dst, uint32_t value);
+void PutVarint64(std::string* dst, uint64_t value);
 void PutFixed32(std::string* dst, uint32_t value);
 void PutFixed64(std::string *dst, uint64_t value);
 void PutLengthPrefixedSlice(std::string* dst, ns_data_structure::Slice const& value);
@@ -17,6 +18,7 @@ bool GetVarint64(ns_data_structure::Slice* input, uint64_t* value);
 bool GetLengthPrefixedSlice(ns_data_structure::Slice * input, ns_data_structure::Slice* result);
 
 uint8_t *EncodeVarint32(uint8_t *dst, uint32_t value);
+uint8_t *EncodeVarint64(uint8_t *dst, uint64_t value);
 
 uint8_t const *GetVarint32Ptr(uint8_t const *p, uint8_t const *limit, uint32_t *value);
 uint8_t const *GetVarint64Ptr(uint8_t const *p, uint8_t const *limit, uint64_t *value);

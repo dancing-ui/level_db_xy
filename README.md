@@ -4,10 +4,17 @@
 ## 基本概念
 ### [LSM(Log-Structured-Merge Tree)](https://cloud.tencent.com/developer/article/1143750)
 1. 事实上，LSM树并不像B+树、红黑树一样是一颗严格的树状数据结构，它其实是一种**存储结构**，目前HBase,LevelDB,RocksDB这些NoSQL存储都是采用的LSM树。
-2. LSM 的设计目标是提供比传统的 B+ 树更好的**写性能**。
-   1. LSM 通过将磁盘的随机写转化为顺序写来提高写性能，而付出的代价就是牺牲部分读性能、写放大（B+树同样有写放大的问题）。
-3. LSM 相比 B+ 树能提高写性能的本质原因是：外存——无论磁盘还是 SSD，其随机读写都要慢于顺序读写。
-4. LevelDB 的写操作（Put/Delete/Write）主要由两步组成：
+2. LSM-Tree 全称是 Log Structured Merge Tree，是一种分层、有序、面向磁盘的数据结构，其核心思想是充分利用磁盘的顺序写性能要远高于随机写性能这一特性，将批量的随机写转化为一次性的顺序写。
+   1. LSM树由两个或以上的存储结构组成，比如在论文中为了方便说明使用了最简单的两个存储结构。一个存储结构常驻内存中，称为C0 tree，具体可以是任何方便健值查找的数据结构，比如红黑树、map之类，甚至可以是跳表。另外一个存储结构常驻在硬盘中，称为C1 tree，具体结构类似B树。
+   ![alt text](img/image1.png)
+   2. 在LSM树中，最低一级即最小的C0树位于内存,而更高级的C1、C2…树都位于磁盘里。数据会先写入内存中的C0树，当它的大小达到一定阈值之后，C0树中的全部或部分数据就会刷入磁盘中的C1树，如下图所示。在实际应用中，为防止内存因断电等原因丢失数据，写入内存的数据同时会顺序在磁盘上写日志，类似于预写日志(WAL)，这就是LSM这个词中Log一词的来历。
+   ![alt text](img/image2.png)
+3. LSM 的设计目标是提供比传统的 B+ 树更好的**写性能**。
+   1. LSM树在前互联网时代并未得到很好的重视，传统的关系型数据库的存储和索引结构依然以基于页面(Page)的B+树和HashTable为主。随着互联网规模的扩大和普及，在面对十亿级的用户接入，以及PB规模数据的写入，传统的关系型数据库已经难以支撑。
+   2. LSM 通过将磁盘的随机写转化为顺序写来提高写性能，而付出的代价就是牺牲部分读性能、写放大（B+树同样有写放大的问题）。
+4. LSM 相比 B+ 树能提高写性能的本质原因是：外存——无论磁盘还是 SSD，其随机读写都要慢于顺序读写。
+5. LSM树各类操作：LSM树将任何的对数据操作都转化为对内存中的Memtable的一次插入。Memtable可以使用任意内存数据结构，如HashTable，B+Tree，SkipList等。对于有事务控制需要的存储系统，需要在将数据写入Memtable之前，先将数据写入持久化存储的WAL(Write Ahead Log)日志。由于WAL日志是顺序Append到持久化存储的，因此无论对磁盘还是SSD都是非常友好的。具体的数据操作参考这个[链接](https://open.oceanbase.com/blog/1793245952)，这个链接里还介绍了LSM-Tree的基本概念
+6. LevelDB 的写操作（Put/Delete/Write）主要由两步组成：
    1. 写日志（WAL，顺序写）。
    2. 写 MemTable（内存中的 SkipList）。
 
@@ -46,9 +53,14 @@ SSTable 按照数据从新到旧被组织成多个层次（上层新下层旧）
    7. 完成Block
    8. 完成TableBuilder
    9. 完成Table
+      1.  完成BlockHandle
+      2.  完成FilterBlock
+      3.  完成Footer
    10. 完成Table相关的操作
        1.  遍历Table
+           1.  完成two_level_iterator
        2.  完成TableCache
        3.  集成Bloom Filter到FilterBlock中
+       4.  完成Table
 7.  正式开始将之前的所有组件合并成一个高性能的NoSql！！！
 

@@ -7,7 +7,7 @@ namespace ns_snapshot {
 
 class Snapshot {
 protected:
-    virtual ~Snapshot();
+    virtual ~Snapshot() = default;
 };
 
 class SnapshotList;

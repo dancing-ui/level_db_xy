@@ -1,0 +1,1 @@
+LevelDB将MemTable生成SSTable的相关操作封装成了TableBuilder类
